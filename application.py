@@ -5,12 +5,7 @@ from streamlit_option_menu import option_menu
 import matplotlib.pyplot as plt
 import numpy as np 
 import pandas as pd 
-import allfunction as all
-import random
-from io import BytesIO
 import base64
-import pickle
-from xlsxwriter import Workbook
 import os
 #==============================================Start=============================================================
 #=======================================define All function needed=========================================
