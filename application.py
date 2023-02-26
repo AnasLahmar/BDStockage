@@ -82,7 +82,7 @@ if selected=="Storage":
         if os.path.exists("data.xlsx"):
             data = pd.read_excel("data.xlsx")
         else:
-            data = pd.DataFrame(columns=["Ref", "EPN", "Component"])
+            data = pd.DataFrame(columns=["Component", "EPN", "Famille","Ref"])
         return data
 
     # Function to save data
@@ -93,7 +93,7 @@ if selected=="Storage":
     data = load_data()
     def clear_excel_file():
         # Create an empty DataFrame with the same columns as the original Excel file
-        columns = ["Ref", "EPN", "Component"]
+        columns = ["Component", "EPN", "Famille","Ref"]
         data = pd.DataFrame(columns=columns)
 
         # Save the empty DataFrame to the Excel file
@@ -103,18 +103,19 @@ if selected=="Storage":
         return "Excel file has been cleared."
 
     # Add the input boxes
-    c1, c2, c3 = st.columns(3)
-    value1 = c1.text_input("Enter Ref:")
+    c1, c2, c3,c4 = st.columns(4)
+    value1 = c1.text_input("Enter Component:")
     value2 = c2.text_input("Enter EPN:")
-    value3 = c3.text_input("Enter Component:")
+    value3 = c3.text_input("Enter Famille:")
+    value4 = c4.text_input("Enter Ref:")
 
     # Add the button to add to Excel file
     button2 = st.button("Add to Excel file")
 
     # If the button is clicked, add the data to the DataFrame and save to Excel file
     if button2:
-        if value1 and value2 and value3:
-            data = data.append({"Ref": value1, "EPN": value2, "Component": value3}, ignore_index=True)
+        if value1 and value2 and value3 and value4:
+            data = data.append({"Component": value1, "EPN": value2, "Famille": value3,"Ref":value4}, ignore_index=True)
             save_data(data)
             st.success("Data added to Excel file!")
         else:
@@ -154,7 +155,7 @@ if selected== 'Processing':
         if os.path.exists("data.xlsx"):
             data = pd.read_excel("data.xlsx")
         else:
-            data = pd.DataFrame(columns=["Ref", "EPN", "Component"])
+            data = pd.DataFrame(columns=[])
         return data
 
     # Function to save data
@@ -165,16 +166,18 @@ if selected== 'Processing':
     def search_excel_file(search_value):
         # Load the data from the Excel file
         data = pd.read_excel("data.xlsx")
-
+#"Component", "EPN", "Famille","Ref"
         # Convert columns to string type
         data["Ref"] = data["Ref"].astype(str)
         data["EPN"] = data["EPN"].astype(str)
         data["Component"] = data["Component"].astype(str)
+        data["Famille"] = data["Famille"].astype(str)
 
         # Check if the search value exists in any of the columns
         search_results = data[data["Ref"].str.contains(search_value, na=False) |
                             data["EPN"].str.contains(search_value, na=False) |
-                            data["Component"].str.contains(search_value, na=False)]
+                            data["Component"].str.contains(search_value, na=False)|
+                            data["Famille"].str.contains(search_value, na=False)]
 
         # If any rows contain the search value, return those rows
         if not search_results.empty:
@@ -215,7 +218,7 @@ if selected== 'Processing':
         # Add the input boxes for deleting rows
         def clear_excel_file():
             # Create an empty DataFrame with the same columns as the original Excel file
-            columns = ["Ref", "EPN", "Component"]
+            columns = ["Component", "EPN", "Famille","Ref"]
             data = pd.DataFrame(columns=columns)
 
             # Save the empty DataFrame to the Excel file
@@ -226,7 +229,7 @@ if selected== 'Processing':
         button4 = st.sidebar.button("Clear All")
         if button4:
             clear_excel_file()
-            data = pd.DataFrame(columns=["Ref", "EPN", "Component"])
+            data = pd.DataFrame(columns=["Component", "EPN", "Famille","Ref"])
             st.sidebar.write("Excel file cleared!")
             st.sidebar.success("All Rows are deleting from Excel file!")
         if data.shape[0]!=0: 
@@ -247,6 +250,8 @@ if selected== 'Processing':
                         data = data[~data["EPN"].str.contains(delete_value)]
                     if data["Component"].dtype == object:
                         data = data[~data["Component"].str.contains(delete_value)]    
+                    if data["Famille"].dtype == object:
+                        data = data[~data["Famille"].str.contains(delete_value)]    
                     else:
                         st.warning("Cannot search for string value in non-string column.")
                     save_data(data)
